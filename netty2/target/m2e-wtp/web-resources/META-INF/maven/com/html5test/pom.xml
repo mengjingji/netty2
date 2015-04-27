@@ -28,6 +28,7 @@
              -->
   </dependencies>
 
+<!-- 
     <build>
     <finalName>html5test</finalName>
         <pluginManagement>
@@ -44,5 +45,5 @@
             </plugins>
         </pluginManagement>
     </build>
-  
+   -->
 </project>
