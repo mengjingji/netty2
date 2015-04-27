@@ -4,6 +4,7 @@ import static org.jboss.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import java.nio.charset.Charset;
+import java.util.zip.Inflater;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -14,7 +15,7 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
+import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
@@ -30,10 +31,19 @@ public class WebSocketServerHandler2 extends SimpleChannelUpstreamHandler {
 			
 		}else if(msg instanceof WebSocketFrame){
 			System.out.println("web socket frame");
-			
+			handleWebSocketFrame(ctx,(WebSocketFrame)msg);
 		}
 	}
 	
+	private void handleWebSocketFrame(ChannelHandlerContext ctx,
+			WebSocketFrame msg) {
+		if(msg instanceof TextWebSocketFrame){
+			String data = ((TextWebSocketFrame) msg).getText();
+			ctx.getChannel().write(new TextWebSocketFrame(data.toUpperCase()));
+		}
+		
+	}
+
 	private void handleHttpRequest(ChannelHandlerContext ctx,HttpRequest req) {
 		System.out.println("http req="+req.toString());
 		DefaultHttpResponse response=new DefaultHttpResponse(HTTP_1_1, FORBIDDEN);
